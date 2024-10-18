@@ -11,7 +11,7 @@ jobs:
     - name: Archive repository
       run: git archive -o repo.zip HEAD
 
-    - name: Install jq
+    - name: Instll jq
       run: sudo apt-get install -y jq
 
     - name: Send archive via curl
