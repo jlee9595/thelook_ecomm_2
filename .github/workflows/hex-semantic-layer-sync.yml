@@ -1,0 +1,38 @@
+name: External Semantic Layer Sync
+run-name: ${{ github.actor }} is uploading an external semantic layer 🚀
+on: [push]
+jobs:
+  External-Semantic-Layer-Sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Archive repository
+      run: git archive -o repo.zip HEAD
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Send archive via curl
+      run: |
+        response=$(curl -s -w "%{http_code}" -o response_body.json -X POST \
+          -F "data=@repo.zip" \
+          -F "syntax=LOOK_ML" \
+          -F "dataConnectionId=fb0b77fd-9213-477d-8e6d-6af40bd3cb39" \
+          -F "verbose=true" \
+          https://rc.hex.tech/api/v1/semantic-layer \
+          -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
+        
+        status_code="${response: -3}"
+        response_body="${response::-3}"
+
+        if [ "$status_code" -ne 201 ]; then
+          echo "Error: Received status code $status_code"
+          echo "Response Body:"
+          echo "$response_body" | jq '.'
+          exit 1
+        fi
+
+        echo "✅ Successfully uploaded semantic layer. See below for skipped entities due to currently unsupported features"
+        cat response_body.json | jq '.skipped'
