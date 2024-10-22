@@ -25,13 +25,13 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}" \
         )
 
-        status_code="${response: -3}"
+        status_code=$(echo "$response" | tail -n 1)
         if [ "$status_code" -ne 201 ]; then
           echo "Error: Received status code $status_code"
           echo "Response Body:"
-          echo -e $(cat response_body.json)
+          echo "$response" | head -n -1
           exit 1
         fi
 
         echo "✅ Successfully uploaded semantic layer. See below for skipped entities due to currently unsupported features"
-        cat response_body.json | jq '.skipped'
+        echo "$response" | head -n -1 | jq '.skipped'
