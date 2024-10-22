@@ -16,22 +16,21 @@ jobs:
 
     - name: Send archive via curl
       run: |
-        response=$(curl -X POST \
+        response=$(curl -s -w "%{http_code}" -o response_body.json -X POST \
           -F "data=@repo.zip" \
           -F "syntax=LOOK_ML" \
           -F "dataConnectionId=150f1a2f-8e8d-5217-a5f7-a0ee762c4bd8" \
           -F "verbose=true" \
           https://rc.hex.tech/api/v1/semantic-layer \
-          -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}" \
-        )
-
-        status_code=$(echo "$response" | tail -n 1)
+          -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
+        
+        status_code="${response: -3}"
         if [ "$status_code" -ne 201 ]; then
           echo "Error: Received status code $status_code"
           echo "Response Body:"
-          echo "$response" | head -n -1
+          echo -e $(cat response_body.json)
           exit 1
         fi
 
         echo "✅ Successfully uploaded semantic layer. See below for skipped entities due to currently unsupported features"
-        echo "$response" | head -n -1 | jq '.skipped'
+        cat response_body.json | jq '.skipped'
