@@ -22,7 +22,7 @@ jobs:
           -F "dataConnectionId=fb0b77fd-9213-477d-8e6d-6af40bd3cb39" \
           -F "verbose=true" \
           https://rc.hex.tech/api/v1/semantic-layer \
-          -H "Authorization: Bearer 0f2f1643c134f06e362eb0c0ecee0da9b9950bcecdd4e6c17ea2d08981048594521be2bbc209c5ad06485feb58f9ac52"
+          -H "Authorization: Bearer ${{ HEXSEMANTICLAYERAPITOKEN }}"
         
         status_code="${response: -3}"
         if [ "$status_code" -ne 201 ]; then
