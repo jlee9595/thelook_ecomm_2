@@ -19,7 +19,7 @@ jobs:
         response=$(curl -X POST \
           -F "data=@repo.zip" \
           -F "syntax=LOOK_ML" \
-          -F "dataConnectionId=fb0b77fd-9213-477d-8e6d-6af40bd3cb39" \
+          -F "dataConnectionId=150f1a2f-8e8d-5217-a5f7-a0ee762c4bd8" \
           -F "verbose=true" \
           https://rc.hex.tech/api/v1/semantic-layer \
           -H "Authorization: Bearer ${{ HEXSEMANTICLAYERAPITOKEN }}"
